@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68"]         # PEP 660 editable support new for setuptools
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "ecomm-prod-assistant"
 version = "0.1.0"
@@ -5,21 +9,22 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "beautifulsoup4==4.13.5",
-    "fastapi==0.116.1",
-    "html5lib==1.1",
-    "jinja2==3.1.6",
+    "fastapi>=0.116.1",
     "langchain==0.3.27",
-    "langchain-astradb==0.6.1",
-    "langchain-core==0.3.75",
-    "langchain-google-genai==2.1.8",
-    "langchain-groq==0.3.6",
-    "lxml==6.0.1",
+    # TIP: Do not pin 'langchain-core' separately; 'langchain' will fetch the correct version.
+    # If necessary, only pin compatible pairs.
     "python-dotenv==1.1.1",
-    "python-multipart==0.0.20",
-    "selenium==4.35.0",
     "streamlit==1.49.1",
-    "structlog==25.4.0",
-    "undetected-chromedriver==3.5.5",
-    "uvicorn==0.35.0",
 ]
+
+# Optional: authors, license
+authors = [{ name = "Sunny Savita" }]
+license = { text = "Proprietary" }
+
+# Optional: CLI command (python -m pip install -e . it will be created after)
+[project.scripts]
+ecomm-assistant = "ecomm_prod_assistant.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["prod_assistant"]
+include = ["ecomm_prod_assistant*"]
