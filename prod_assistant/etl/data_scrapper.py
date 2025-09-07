@@ -12,7 +12,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class FlipkartScraper:
     def __init__(self, output_dir="data"):
-        self.driver = uc.Chrome()
+        #self.driver = uc.Chrome()
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -21,10 +21,11 @@ class FlipkartScraper:
         """
         options = uc.ChromeOptions()
         options.add_argument("--no-sandbox")
-        options.add_argument("--disalbe-blink-features=AutomationControlled")
+        options.add_argument("--disable-blink-features=AutomationControlled")
         driver = uc.Chrome(options=options, use_subprocess=True)
 
         if not product_url.startswith("http"):
+            driver.quit()
             return "No reviews found"
         
         try:
