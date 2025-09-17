@@ -2,9 +2,18 @@ import importlib.metadata
 packages = [
     "langchain",
     "python-dotenv",
+    "python-multipart",
     "langchain_core",
     "streamlit",
-    "fastapi"
+    "fastapi",
+    "selenium",
+    "uvicorn",
+    "beautifulsoup4",
+    "jinja2",
+    "lxml",
+    "undetected-chromedriver",
+    "langgraph",
+    "structlog"
 ]
 for pkg in packages:
     try:

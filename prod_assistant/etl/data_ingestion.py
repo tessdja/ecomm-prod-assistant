@@ -133,6 +133,3 @@ class DataIngestion:
 if __name__ == "__main__":
     ingestion = DataIngestion()
     ingestion.run_pipeline()
-
-
-

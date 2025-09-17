@@ -4,7 +4,6 @@ import re
 import os
 from bs4 import BeautifulSoup
 import undetected_chromedriver as uc
-#from undetected_chromedriver import uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -12,7 +11,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class FlipkartScraper:
     def __init__(self, output_dir="data"):
-        #self.driver = uc.Chrome()
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -109,7 +107,7 @@ class FlipkartScraper:
         """
         if os.path.isabs(filename):
             path = filename
-        elif os.path.dirname(filename):
+        elif os.path.dirname(filename): # filename includes subfolder like 'data/product_reviews.csv'
             path = filename
             os.makedirs(os.path.dirname(path), exist_ok=True)
         else:
