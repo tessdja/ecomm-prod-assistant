@@ -29,3 +29,5 @@ venv/
 archive/
 
 .vscode/
+
+git-log-output.txt
