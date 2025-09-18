@@ -1,0 +1,97 @@
+*   50bc8b2 2025-09-17 tessdja Merge branch 'main' of https://github.com/tessdja/ecomm-prod-assistant
+|\  
+| * f262b91 2025-09-11 tessdja Remove .env file from repo and add to .gitignore| | 
+| |  .env | 6 ------
+| |  1 file changed, 6 deletions(-)
+
+* | 65211a3 2025-09-17 tessdja normal and agentic rag workflow created with ui and api call
+|/  |   
+|    .env                                             |   6 +-
+|    data/product_reviews.csv                         |  22 +-
+|    get_lib_versions.py                              |  11 +-
+|    ...NIPS-2017-attention-is-all-you-need-Paper.pdf | Bin 0 -> 569417 bytes
+|    notebook/test.ipynb                              | 765 ++++++++++++++++++-
+|    prod_assistant/etl/data_ingestion.py             |   5 +-
+|    prod_assistant/etl/data_scrapper.py              |   4 +-
+|    prod_assistant/prompt_library/prompts.py         |  47 ++
+|    .../retriever/{retriever.py => retrieval.py}     |   0
+|    prod_assistant/router/main.py                    |  37 +
+|    prod_assistant/workflow/agentic_rag_workflow.py  | 132 ++++
+|    .../workflow/normal_generation_workflow.py       |  67 ++
+|    pyproject.toml                                   |  18 +-
+|    requirements.txt                                 |   2 +-
+|    static/f6634145-b9d9-4ea1-b5e5-cb705192c6fd.png  | Bin 0 -> 1083163 bytes
+|    templates/chat.html                              | 193 +++++
+|    uv.lock                                          | 286 +++++--
+|    17 files changed, 1513 insertions(+), 82 deletions(-)
+
+* 93b598b 2025-09-07 tessdja retriever script is working.| 
+|  .env                                  |  2 +-
+|  data/product_reviews.csv              | 10 +++--
+|  notebook/test.ipynb                   |  2 +-
+|  prod_assistant/config/config.yaml     |  2 +-
+|  prod_assistant/retriever/__init__.py  |  0
+|  prod_assistant/retriever/retriever.py | 74 +++++++++++++++++++++++++++++++++
+|  prod_assistant/router/main.py         |  0
+|  prod_assistant/utils/model_loader.py  |  6 +--
+|  pyproject.toml                        | 33 ++++++++-------
+|  requirements.txt                      |  4 +-
+|  10 files changed, 109 insertions(+), 24 deletions(-)
+
+* d53759f 2025-09-07 tessdja removed self.driver=uc.Chrome() in constructor and tested successfully| 
+|  data/product_reviews.csv            | 3 +++
+|  prod_assistant/etl/data_scrapper.py | 5 +++--
+|  2 files changed, 6 insertions(+), 2 deletions(-)
+
+* 8fc6a00 2025-09-07 tessdja data scrapper and data ingestion script added| 
+|  .env                                          |    6 +
+|  .gitignore                                    |   21 +
+|  data/product_reviews.csv                      |    2 +
+|  main.py                                       |    1 +
+|  notebook/test.ipynb                           |   29 +-
+|  {config => prod_assistant/config}/__init__.py |    0
+|  prod_assistant/config/config.yaml             |   22 +
+|  prod_assistant/etl/data_ingestion.py          |  138 ++
+|  prod_assistant/etl/data_scrapper.py           |  122 ++
+|  prod_assistant/exception/custom_exception.py  |   65 +
+|  prod_assistant/logger/__init__.py             |    4 +
+|  prod_assistant/logger/custom_logger.py        |   53 +
+|  prod_assistant/utils/config_loader.py         |   27 +
+|  prod_assistant/utils/model_loader.py          |  154 ++
+|  pyproject.toml                                |   14 +-
+|  requirements.txt                              |   14 +-
+|  scrapper_ui.py                                |   15 +-
+|  uv.lock                                       | 2457 +++++++++++++++++++++++
+|  18 files changed, 3132 insertions(+), 12 deletions(-)
+
+* 26fa099 2025-08-30 tessdja created project folder structure| 
+|  .env                                      |   0
+|  .github/workflows/.gitkeep                |   0
+|  .vscode/settings.json                     |   4 +
+|  config/__init__.py                        |   0
+|  get_lib_versions.py                       |   4 +-
+|  notebook/test.ipynb                       |  51 ++++++++
+|  prod_assistant/__init__.py                |   0
+|  prod_assistant/etl/__init__.py            |   0
+|  prod_assistant/exception/__initi__.py     |   0
+|  prod_assistant/logger/__init__.py         |   0
+|  prod_assistant/prompt_library/__init__.py |   0
+|  prod_assistant/utils/__init__.py          |   0
+|  prod_assistant/workflow/__init__.py       |   0
+|  pyproject.toml                            |   8 +-
+|  requirements.txt                          |   2 +
+|  scrapper_ui.py                            |  68 ++++++++++
+|  static/style.css                          | 144 +++++++++++++++++++++
+|  templates/index.html                      | 193 ++++++++++++++++++++++++++++
+|  test/__init__.py                          |   0
+|  19 files changed, 472 insertions(+), 2 deletions(-)
+
+* 752ffd8 2025-08-30 tessdja Initial Project Setup  
+   .gitignore          | 10 ++++++++++
+   .python-version     |  1 +
+   README.md           |  0
+   get_lib_versions.py | 12 ++++++++++++
+   main.py             |  6 ++++++
+   pyproject.toml      |  7 +++++++
+   requirements.txt    |  3 +++
+   7 files changed, 39 insertions(+)
