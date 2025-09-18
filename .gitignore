@@ -30,5 +30,6 @@ archive/
 
 .vscode/
 
-git-log-output.txt.env
+git-log-output.txt
+.env
 .env.*
