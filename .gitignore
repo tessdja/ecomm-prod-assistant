@@ -19,6 +19,7 @@ venv/
 # Environment files
 .env
 *.env
+.env.*
 
 # Logs
 *.log
@@ -31,5 +32,6 @@ archive/
 .vscode/
 
 git-log-output.txt
-.env
-.env.*
+
+
+

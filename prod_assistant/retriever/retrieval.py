@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 import sys
 from pathlib import Path
 
+from langchain.retrievers.document_compressors import LLMChainFilter
+from langchain.retrievers import ContextualCompressionRetriever
+
 # Add the project root to the Python Path for direct script execution
 project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
@@ -54,9 +57,27 @@ class Retriever:
             )
         if not self.retriever:
             top_k = self.config["retriever"]["top_k"] if "retriever" in self.config else 3
-            retriever=self.vstore.as_retriever(search_kwargs={"k":top_k})
+            
+            mmr_retriever=self.vstore.as_retriever(
+                search_type="mmr",
+                search_kwargs={"k":top_k,
+                                "fetch_k": 20,
+                                "lambda_mult": 0.7,
+                                "score_threshold": 0.3
+                                })
+
             print("Retriever loaded succssfully.")
-            return retriever
+
+            llm = self.model_loader.load_llm()
+
+            compressor=LLMChainFilter.from_llm(llm)
+
+            self.retriever = ContextualCompressionRetriever(
+                base_compressor=compressor,
+                base_retriever=mmr_retriever
+            )
+
+            return mmr_retriever
         
     def call_retriever(self, query):
         """_summary_
@@ -67,8 +88,8 @@ class Retriever:
     
 if __name__=='__main__':
     retriever_obj = Retriever()
-    user_query = "Can you suggest a good budget for a laptop?"
+    user_query = "Can you suggest good budget laptops?"
     results = retriever_obj.call_retriever(user_query)
 
     for idx, doc in enumerate(results, 1):
-        print(f"Results {idx}: {doc.page_content}\nMetadata: {doc.metadata}\n")
+        print(f"Result {idx}: {doc.page_content}\nMetadata: {doc.metadata}\n")

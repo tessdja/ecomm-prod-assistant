@@ -8,6 +8,7 @@ from langgraph.graph.message import add_messages
 from prompt_library.prompts import PROMPT_REGISTRY, PromptType
 from retriever.retrieval import Retriever
 from utils.model_loader import ModelLoader
+from langgraph.checkpoint.memory import MemorySaver
 
 
 class AgenticRAG:
@@ -20,8 +21,9 @@ class AgenticRAG:
         self.retriever_obj = Retriever()
         self.model_loader = ModelLoader()
         self.llm = self.model_loader.load_llm()
+        self.checkpointer = MemorySaver()
         self.workflow = self._build_workflow()
-        self.app = self.workflow.compile()
+        self.app = self.workflow.compile(checkpointer=self.checkpointer)
 
     # ---------- Helpers ----------
     def _format_docs(self, docs) -> str:
@@ -120,9 +122,10 @@ class AgenticRAG:
         return workflow
 
     # ---------- Public Run ----------
-    def run(self, query: str) -> str:
+    def run(self, query: str, thread_id: str = "default thread") -> str:
         """Run the workflow for a given query and return the final answer."""
-        result = self.app.invoke({"messages": [HumanMessage(content=query)]})
+        result = self.app.invoke({"messages": [HumanMessage(content=query)]},
+                                    config={"configurable": {"thread_id": thread_id}})
         return result["messages"][-1].content
 
 

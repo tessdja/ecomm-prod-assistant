@@ -13,7 +13,12 @@ packages = [
     "lxml",
     "undetected-chromedriver",
     "langgraph",
-    "structlog"
+    "structlog", 
+    "html5lib",
+    "langchain-astradb",
+    "langchain-google-genai",
+    "langchain-groq",
+    "ragas"
 ]
 for pkg in packages:
     try:
