@@ -10,6 +10,10 @@ from retriever.retrieval import Retriever
 from utils.model_loader import ModelLoader
 from langgraph.checkpoint.memory import MemorySaver
 
+# tess - sep 17
+from evaluation.ragas_eval import evaluate_context_precision, evaluate_response_relevancy
+
+
 
 class AgenticRAG:
     """Agentic RAG pipeline using LangGraph."""
@@ -79,16 +83,56 @@ class AgenticRAG:
         score = chain.invoke({"question": question, "docs": docs})
         return "generator" if "yes" in score.lower() else "rewriter"
 
+    # tess
+    # def _generate(self, state: AgentState):  
+    #     print("--- GENERATE ---")
+    #     question = state["messages"][0].content
+    #     docs = state["messages"][-1].content
+    #     prompt = ChatPromptTemplate.from_template(
+    #         PROMPT_REGISTRY[PromptType.PRODUCT_BOT].template
+    #     )
+    #     chain = prompt | self.llm | StrOutputParser()
+    #     response = chain.invoke({"context": docs, "question": question})
+    #     return {"messages": [HumanMessage(content=response)]}
+
     def _generate(self, state: AgentState):
         print("--- GENERATE ---")
         question = state["messages"][0].content
-        docs = state["messages"][-1].content
+
+        # The message right before this node is the formatted context emitted by _vector_retriever
+        # (If Assistant answered directly, this may not be a context block.)
+        contexts_block = state["messages"][-1].content
+
+        # Build the answer using your registered PRODUCT_BOT prompt
         prompt = ChatPromptTemplate.from_template(
             PROMPT_REGISTRY[PromptType.PRODUCT_BOT].template
         )
         chain = prompt | self.llm | StrOutputParser()
-        response = chain.invoke({"context": docs, "question": question})
-        return {"messages": [HumanMessage(content=response)]}
+        answer = chain.invoke({"context": contexts_block, "question": question})
+
+        # --- RAGAS scoring (only if we actually have retrieved contexts) ---
+        # Your _format_docs used "\n\n---\n\n" between chunks; split it back into a list[str]
+        retrieved_contexts = []
+        if isinstance(contexts_block, str) and ("---" in contexts_block or "Title:" in contexts_block or "Reviews:" in contexts_block):
+            retrieved_contexts = [c.strip() for c in contexts_block.split("\n\n---\n\n") if c.strip()]
+
+        if retrieved_contexts:
+            try:
+                ctx_precision = evaluate_context_precision(question, answer, retrieved_contexts)
+                resp_relevancy = evaluate_response_relevancy(question, answer, retrieved_contexts)
+
+                # Log to server console
+                print(f"[RAGAS] Context Precision: {ctx_precision:.3f} | Response Relevancy: {resp_relevancy:.3f}")
+
+                # (Optional) append a tiny eval footer users can see
+                answer = (
+                    f"{answer}\n\n---\n"
+                    f"[Eval] Context Precision: {ctx_precision:.2f} | Response Relevancy: {resp_relevancy:.2f}"
+                )
+            except Exception as e:
+                print(f"[RAGAS] Evaluation error: {e}")
+
+        return {"messages": [HumanMessage(content=answer)]}
 
     def _rewrite(self, state: AgentState):
         print("--- REWRITE ---")
@@ -122,7 +166,7 @@ class AgenticRAG:
         return workflow
 
     # ---------- Public Run ----------
-    def run(self, query: str, thread_id: str = "default thread") -> str:
+    def run(self, query: str, thread_id: str = "default_thread") -> str:
         """Run the workflow for a given query and return the final answer."""
         result = self.app.invoke({"messages": [HumanMessage(content=query)]},
                                     config={"configurable": {"thread_id": thread_id}})

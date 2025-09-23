@@ -102,7 +102,7 @@ class ModelLoader:
         llm_config = llm_block[provider_key]
         provider = llm_config.get("provider")
         model_name = llm_config.get("model_name")
-        temperature = llm_config.get("temperature", 0.2)
+        temperature = llm_config.get("temperature", 0.0)
         max_tokens = llm_config.get("max_output_tokens", 2048)
 
         log.info("Loading LLM", provider=provider, model=model_name)
