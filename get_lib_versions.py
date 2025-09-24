@@ -18,7 +18,10 @@ packages = [
     "langchain-astradb",
     "langchain-google-genai",
     "langchain-groq",
-    "ragas"
+    "ragas",
+    "mcp",
+    "langchain-mcp-adapters",
+    "ddgs"
 ]
 for pkg in packages:
     try:
